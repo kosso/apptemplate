@@ -1,24 +1,26 @@
-// Info/Help tab Main window
+// Dummy Settings window
+
 function createWindow(config) {
 
-	var functions = require('/mods/functions');
-	var player = require('/mods/player');
+	var functions = require('/lib/functions');
+	var shared_view = require('/ui/shared_view');
 
 	var _args = {
-      top:0,
-      left:0,
-      right:0,
-      bottom:0,
-      zIndex:2,
-      fullscreen:true,
-      navBarHidden:true,
-      tabBarHidden:true,
-      navTintColor:'#333',
-      tintColor:'#fff',
-      backgroundColor:'#333'
+    top:0,
+    left:0,
+    right:0,
+    bottom:0,
+    zIndex:2,
+    fullscreen:true,
+    navBarHidden:true,
+    tabBarHidden:true,
+    navTintColor:'#fff',
+    tintColor:'#fff',
+    backgroundColor:'#4c4d7d'
   };
+
   if(Ti.Platform.osname==='android'){
-  	_args.windowSoftInputMode = Ti.UI.Android.SOFT_INPUT_STATE_HIDDEN // Stops textfield in scrollview getting immediate focus
+  	_args.windowSoftInputMode = Ti.UI.Android.SOFT_INPUT_STATE_HIDDEN // Stops textfields in the scrollview getting immediate focus
   }
 	var self = Ti.UI.createWindow(_args);
 
@@ -37,7 +39,7 @@ function createWindow(config) {
 	});
 	btn_help.addEventListener('click', function() {
 
-		functions.openWindowModule(self, '/ui/common/window_help'); // :reference to this window, path to JS module
+		functions.openWindowModule(self, '/ui/window_help'); // :reference to this window, path to JS module
 	});
 	top_bar.add(btn_help);
 
@@ -52,8 +54,8 @@ function createWindow(config) {
       animated:true
   	};
   	if(Ti.Platform.osname==='android'){
-  		_close_args.activityEnterAnimation = Ti.App.Android.R.anim.still;
-     _close_args.activityExitAnimation = Ti.App.Android.R.anim.slide_out;
+  		_close_args.activityEnterAnimation = Ti.App.Android.R.anim.still; 	 // See: /platform/android/anim/*.xml 
+     _close_args.activityExitAnimation = Ti.App.Android.R.anim.slide_out;  // See: /platform/android/anim/*.xml 
   	}
   	self.close(_close_args);
   });
@@ -106,7 +108,7 @@ function createWindow(config) {
 		left:20
 	});
 	btn_stop.addEventListener('click', function() {
-		player.stop();
+		shared_view.stop();
 	});
 	scrollView.add(btn_stop);
 
@@ -116,19 +118,19 @@ function createWindow(config) {
 		left:20
 	});
 	btn_start.addEventListener('click', function() {
-		player.start();
+		shared_view.start();
 	});
 	scrollView.add(btn_start);
 
 
-	var playerView = player.createPlayerView({
+	var sharedView = shared_view.createSharedView({
 		bottom:0,
 		height:80,
 		width:Ti.UI.FILL,
 		backgroundColor:'#222'
 	});
 
-	self.add(playerView);
+	self.add(sharedView);
 
 	
 	return self;

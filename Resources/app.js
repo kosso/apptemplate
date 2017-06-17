@@ -1,18 +1,15 @@
 /*
 
+	A boilerplate Titanium iOS and Android app project for an app template and structure which I find myself often needing to build from scratch. 
+  
+	Author: @kosso
   *******************************************
 */
 
-var os = Titanium.Platform.osname;
+var win = require('/ui/window_home').createWindow();
 
-var win = require('/ui/common/window_home').createWindow();
-
-var player = require('/mods/player');
-
-if(os==='android'){
-  win.open({theme: "AmazingTheme"});
- //win.open();
-
+if(Titanium.Platform.osname==='android'){
+  win.open({theme: "FullscreenTheme"}); // See /platforms/android/res/values/mytheme.xml  
 } else {
   var rootNavWin = Titanium.UI.iOS.createNavigationWindow({
     zIndex:1,
