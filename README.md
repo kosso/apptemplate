@@ -2,6 +2,12 @@ Just a simple cross-platform fullscreen Titanium (6.1.0.GA) 'classic' app boiler
 
 Pushing this up here as I often need to start a new app with this structure. 
 
+
+
+**NOTE**: The Window slide in and out open/close animations were fixed in Titanium SDK 6.1.0 - https://jira.appcelerator.org/browse/TIMOB-24048 
+
+
+
 #### iOS
 
 ![example](https://github.com/kosso/apptemplate/blob/master/ios.gif "iOS example")
