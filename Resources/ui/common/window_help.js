@@ -1,9 +1,9 @@
 // Info/Help tab Main window
-function createWindow() {
+function createWindow(config) {
 
 	var functions = require('/mods/functions');
 
-	var player = require('/mods/player');
+//	var player = require('/mods/player');
 	console.log('help player.time: ', player.getData().time);
 
 	// player.setData({
@@ -43,9 +43,17 @@ function createWindow() {
 		left:10
 	});
 
-  btn_back.addEventListener('click', function(){
-      self.close({animated:true});
+	btn_back.addEventListener('click', function(){
+  	var _close_args = {
+      animated:true
+  	};
+  	if(Ti.Platform.osname==='android'){
+  		_close_args.activityEnterAnimation = Ti.App.Android.R.anim.still;
+     _close_args.activityExitAnimation = Ti.App.Android.R.anim.slide_out;
+  	}
+  	self.close(_close_args);
   });
+  
   top_bar.add(btn_back);
 
 
@@ -53,7 +61,7 @@ function createWindow() {
 		top:50,
 		left:0,
 		right:0,
-		bottom:0,
+		bottom:80,
 		zIndex:1,
 		backgroundColor:'transparent',
 		contentHeight:Ti.UI.SIZE,
@@ -76,7 +84,7 @@ function createWindow() {
 
 
 	var label_body = Ti.UI.createLabel({
-		text:player.getData().time,
+		text:'is on the way',
 		top:10,
 		left:80,
 		right:20,
@@ -87,13 +95,56 @@ function createWindow() {
 
 	scrollView.add(label_body);
 
+	var btn_stop = Ti.UI.createButton({
+		top:10,
+		title:'stop',
+		left:20
+	});
+	btn_stop.addEventListener('click', function() {
+		player.stop();
+	});
+	scrollView.add(btn_stop);
 
-	Ti.App.addEventListener('player.update', function(d){
-		label_body.text = d.time;
-		
+	var btn_start = Ti.UI.createButton({
+		top:10,
+		title:'start',
+		left:20
+	});
+	btn_start.addEventListener('click', function() {
+		player.start();
+	});
+	scrollView.add(btn_start);
+
+
+
+	var playerView = player.createPlayerView({
+		bottom:0,
+		height:80,
+		width:Ti.UI.FILL,
+		backgroundColor:'#222'
 	});
 
-	
+	self.add(playerView);
+
+
+	// Ti.App.addEventListener('player.update', function(d){
+	// 	label_body.text = d.time;
+		
+	// });
+
+	// self.getPlayer = function(){
+
+	// 	console.log('playerView:',playerView);
+	// 	self.add(playerView);
+
+	// };
+
+	// self.addEventListener('close', function(){
+		
+	// 	config.parentWin.getPlayer();
+
+	// });
+
 	return self;
 };
 

@@ -6,19 +6,23 @@ function openWindowModule(win, module_path, config_data){
         return;
     }
     req_win = module_path;
-    config_data = config_data || null;   
+    config_data = config_data || {};  
+     
+    config_data.parentWin = win;
+
     var new_win = require(module_path).createWindow(config_data);
     new_win.addEventListener('open', function(e){
         req_win = null;
     });
-    
+    //new_win.parentWin = win;
+
     if(os==='android'){
         new_win.addEventListener('androidback', function(e){
             // Use custom animations in /platform/android/res/anim 
             new_win.close({
-                animated:true, 
-                //activityExitAnimation : Ti.App.Android.R.anim.slide_none,
-                //activityEnterAnimation : Ti.App.Android.R.anim.slide_out_right
+                //animated:true, 
+                activityEnterAnimation: Ti.App.Android.R.anim.still,
+                activityExitAnimation: Ti.App.Android.R.anim.slide_out
             });
         });
     }
@@ -41,8 +45,8 @@ function openWindowModule(win, module_path, config_data){
         new_win.open({
             animated:true, 
             theme: "AmazingTheme",
-            //activityEnterAnimation : Ti.App.Android.R.anim.slide_in_right_to_left,
-            //activityExitAnimation : Ti.App.Android.R.anim.slide_none
+            activityEnterAnimation: Ti.App.Android.R.anim.slide_in,
+            activityExitAnimation: Ti.App.Android.R.anim.still
         });
     } else {
         new_win.containingNav = win.containingNav;

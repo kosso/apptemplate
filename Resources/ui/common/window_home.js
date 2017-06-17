@@ -6,24 +6,6 @@ function createWindow() {
 
 	var player = require('/mods/player');
 
-	var t = 0;
-
-	var timer = setInterval(function(){
-
-		console.log(t);
-		t++;
-		var d = {time:t};
-
-		player.setData(d);
-
-		Ti.App.fireEvent('player.update', d);
-
-	},1000);
-
-
-
-
-
 
 	console.log('home player.time: ', player.getData().time);
 
@@ -119,9 +101,9 @@ function createWindow() {
 		top:50,
 		left:0,
 		right:0,
-		bottom:0,
+		bottom:80,
 		zIndex:1,
-		backgroundColor:'transparent',
+		backgroundColor:'#aa000000',
 		contentHeight:Ti.UI.SIZE,
 		scrollType:'vertical',
 		layout:'vertical'
@@ -142,7 +124,7 @@ function createWindow() {
 
 
 	var label_body = Ti.UI.createLabel({
-		text:player.getData().time,
+		text:'welcome home',
 		top:10,
 		left:80,
 		right:20,
@@ -154,15 +136,69 @@ function createWindow() {
 	scrollView.add(label_body);
 
 
-	Ti.App.addEventListener('player.update', function(d){
-		label_body.text = d.time;
-		
+
+
+	var btn_help = Ti.UI.createButton({
+		title:'help',
+		left:20
+	});
+	btn_help.addEventListener('click', function() {
+
+		functions.openWindowModule(self, '/ui/common/window_help'); // :reference to this window, path to JS module
+	});
+	top_bar.add(btn_help);
+
+
+	var btn_stop = Ti.UI.createButton({
+		top:10,
+		title:'stop',
+		left:20
+	});
+	btn_stop.addEventListener('click', function() {
+		player.stop();
+	});
+	scrollView.add(btn_stop);
+
+	var btn_start = Ti.UI.createButton({
+		top:10,
+		title:'start',
+		left:20
+	});
+	btn_start.addEventListener('click', function() {
+		player.start();
+	});
+	scrollView.add(btn_start);
+
+
+
+
+
+	var playerView = player.createPlayerView({
+		bottom:0,
+		height:80,
+		width:Ti.UI.FILL,
+		backgroundColor:'#222'
 	});
 
+	self.add(playerView);
+
+
+	// Ti.App.addEventListener('player.update', function(d){
+	// 	label_body.text = d.time;
+		
+	// });
+
+	self.getPlayer = function(){
+
+		//console.log('playerView:',playerView);
+		//self.add(playerView);
+
+	};
 
 
 	self.addEventListener('focus', function(){
-		
+	//		console.log('playerView:',playerView);
+	//	self.add(playerView);
 
 	});
 
@@ -202,14 +238,40 @@ function createWindow() {
 
 	}
 
-	// if(Ti.Platform.osname==='android'){
+	if(Ti.Platform.osname==='android'){
 
-	// 	self.addEventListener('android:back', function(e){
+		self.addEventListener('android:back', function(e){
 
-	// 		console.log('ANDROID:BACK!! ');
+			if(player.isPlaying()){
 
- //    });
-	// }
+				var close_warning_msg = 'Are you sure you want to exit?';
+				var close_warning_opts = {
+					cancel: 0,
+					buttonNames: ['CANCEL', 'EXIT'],
+					destructive: 1,
+					message: close_warning_msg
+				};
+
+
+    		var cexitDlg = Ti.UI.createAlertDialog(close_warning_opts);
+      	cexitDlg.addEventListener('click', function(e){
+      		if(e.index===1){
+
+      			player.stop();
+      			
+	          console.log('KILL APP');
+		        Ti.Android.currentActivity.finish();
+      		}
+      	});
+      	cexitDlg.show();
+
+    	} else {
+    		Ti.Android.currentActivity.finish();
+    	}
+
+
+    });
+	}
 
 
 

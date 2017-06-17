@@ -1,7 +1,7 @@
 function ApplicationTabGroup() {
 	//create module instance
 	var self = Ti.UI.createTabGroup();
-
+ 
 	// Create modules to be required for : Home and Settings. > return a window.
 	// Provide a handheld and tablet version if neccessary. 
 

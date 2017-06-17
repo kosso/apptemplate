@@ -13,7 +13,7 @@
     <analytics>false</analytics>
     <guid>afc3c96b-a356-4b22-9fff-346d79e4abd1</guid>
     <property name="ti.ui.defaultunit" type="string">dip</property>
-    <property name="run-on-main-thread" type="bool">true</property>
+    <property name="run-on-main-thread" type="bool">false</property>
     <ios>
         <enable-launch-screen-storyboard>true</enable-launch-screen-storyboard>
         <use-app-thinning>true</use-app-thinning>
@@ -50,7 +50,10 @@
         </splash>
         <theme>default</theme>
     </mobileweb>
-    <modules/>
+    <modules>
+        <module platform="iphone" version="0.3">ti.mely</module>
+        <module platform="android">ti.mely</module>
+    </modules>
     <deployment-targets>
         <target device="android">true</target>
         <target device="ipad">true</target>
