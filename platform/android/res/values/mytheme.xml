@@ -6,7 +6,7 @@
         <item name="android:windowNoTitle">true</item>  
         <item name="android:textAllCaps">false</item>
     </style>
-    <style name="AmazingTheme" parent="@style/Theme.AppCompat.Fullscreen">
+    <style name="FullscreenTheme" parent="@style/Theme.AppCompat.Fullscreen">
       <item name="android:textAllCaps">false</item>
       <item name="android:windowNoTitle">true</item>  
   </style>

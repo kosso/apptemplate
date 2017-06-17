@@ -1,9 +1,13 @@
-// player
-var data = {time:0};
+// A shared view. 
+// eg: Could be used for an audio player UI. 
+
+// Some shared data object.
+var data = {
+	time:0
+};
+
 var is_playing = false;
 var timerMod, timer;
-
-//var player_view = null;
 
 function setData (obj){
     data = obj;
@@ -15,55 +19,19 @@ function getData () {
 
 function start(){
 
-  //var timer = require('ti.mely').createTimer();
-
-	// function showUpdate(d){
-	// 	var msg = "interval changed - interval set to " + d.interval + " interval count = " + d.intervalCount;
-	// 	console.log(msg);
-	// }
-
-	// timer.addEventListener('onIntervalChange',showUpdate);
-	
-	// timer.start({
-	// 	interval:1000,
-	// 	debug:true
-	// });
 	if(timerMod == null){
+
 		timerMod = require('ti.mely');
-
-		console.log(timerMod);
-
 		timer = timerMod.createTimer();
-
-		console.log(timer);
-
-
-		//setTimeout(function(){
+		timer.start({
+			interval:1000
+		});
+		is_playing = true;
 	
-			timer.start({
-				interval:1000
-			});
-
-			is_playing = true;
-		//}, 2000);
-
-
+		console.log('started');
 	}
 
 	timer.addEventListener('onIntervalChange',update);
-
-
-}
-
-function update(){
-
-		data.time++;
-
-		console.log('time:', data.time);
-
-		setData(data);
-
-		Ti.App.fireEvent('player.update', data);
 
 }
 
@@ -74,19 +42,27 @@ function stop(){
 	timer = null;
 	timerMod = null;
 	is_playing = false;
+
+	console.log('stopped');
+
 }
+
+
+function update(){
+
+		data.time++;
+		setData(data);
+		console.log('updated:', data.time);
+		Ti.App.fireEvent('player.update', data);
+
+}
+
 
 function createPlayerView(args){
 
-	// if(player_view != null){
-	// 	console.log('got existing player_view');
-	// 	return player_view;
-	// }
-
 	var player_view = Ti.UI.createView(args);
-
 	var label= Ti.UI.createLabel({
-		text:'player',
+		text:'shared view with timer',
 		top:10,
 		left:10,
 		right:10,
@@ -96,7 +72,6 @@ function createPlayerView(args){
 	});
 
 	player_view.add(label);
-
 
 	var label_time = Ti.UI.createLabel({
 		text:getData().time,
@@ -112,14 +87,12 @@ function createPlayerView(args){
 
 	player_view.label_time = label_time;
 
+	// Receive update
 	Ti.App.addEventListener('player.update', function(d){
 		label_time.text = d.time;
-		
 	});
 
-
 	return player_view;
-
 
 }
 
@@ -127,15 +100,8 @@ function isPlaying(){
 	return is_playing;
 }
 
-// The special variable 'exports' exposes the functions as public
-exports.setData = setData;
 exports.getData = getData;
-
 exports.start = start;
 exports.stop = stop;
 exports.isPlaying = isPlaying;
-
-
 exports.createPlayerView = createPlayerView;
-
-

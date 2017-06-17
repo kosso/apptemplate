@@ -6,9 +6,7 @@ function createWindow() {
 
 	var player = require('/mods/player');
 
-
 	console.log('home player.time: ', player.getData().time);
-
 
 	var _args = {
         top:0,

@@ -4,8 +4,6 @@ function createWindow(config) {
 	var functions = require('/mods/functions');
 	var player = require('/mods/player');
 
-	console.log('settings player.time: ', player.getData().time);
-
 	var _args = {
       top:0,
       left:0,
@@ -102,29 +100,25 @@ function createWindow(config) {
 	scrollView.add(label_body);
 
 
+	var btn_stop = Ti.UI.createButton({
+		top:10,
+		title:'stop',
+		left:20
+	});
+	btn_stop.addEventListener('click', function() {
+		player.stop();
+	});
+	scrollView.add(btn_stop);
 
-		var btn_stop = Ti.UI.createButton({
-			top:10,
-			title:'stop',
-			left:20
-		});
-		btn_stop.addEventListener('click', function() {
-			player.stop();
-		});
-		scrollView.add(btn_stop);
-
-		var btn_start = Ti.UI.createButton({
-			top:10,
-			title:'start',
-			left:20
-		});
-		btn_start.addEventListener('click', function() {
-			player.start();
-		});
-		scrollView.add(btn_start);
-
-
-
+	var btn_start = Ti.UI.createButton({
+		top:10,
+		title:'start',
+		left:20
+	});
+	btn_start.addEventListener('click', function() {
+		player.start();
+	});
+	scrollView.add(btn_start);
 
 
 	var playerView = player.createPlayerView({
@@ -135,26 +129,6 @@ function createWindow(config) {
 	});
 
 	self.add(playerView);
-
-
-	// Ti.App.addEventListener('player.update', function(d){
-	// 	label_body.text = d.time;
-
-	// });
-	
-	// self.getPlayer = function(){
-
-	// 	console.log('playerView:',playerView);
-	// 	self.add(playerView);
-
-	// };
-
-	// self.addEventListener('close', function(){
-		
-	// 	config.parentWin.getPlayer();
-
-	// });
-
 
 	
 	return self;

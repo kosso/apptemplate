@@ -1,6 +1,6 @@
-// Various helpers
-var req_win = null; // stop double-opening of a window due to lag/impatience/double-click/'bounce'/etc. 
+// functions
 
+var req_win = null; // stop double-opening of a window due to lag/impatience/double-click/'bounce'/etc. 
 function openWindowModule(win, module_path, config_data){
     if(module_path == req_win){
         return;
@@ -8,49 +8,30 @@ function openWindowModule(win, module_path, config_data){
     req_win = module_path;
     config_data = config_data || {};  
      
-    config_data.parentWin = win;
-
     var new_win = require(module_path).createWindow(config_data);
     new_win.addEventListener('open', function(e){
         req_win = null;
     });
-    //new_win.parentWin = win;
 
     if(os==='android'){
         new_win.addEventListener('androidback', function(e){
             // Use custom animations in /platform/android/res/anim 
             new_win.close({
-                //animated:true, 
                 activityEnterAnimation: Ti.App.Android.R.anim.still,
                 activityExitAnimation: Ti.App.Android.R.anim.slide_out
             });
         });
     }
-    /*
-    new_win.addEventListener('swipe',function(e){
-        if(e.direction==='right'){
-            if(os==='android'){
-                // Use custom animations in /platform/android/res/anim 
-                new_win.close({
-                    activityExitAnimation : Ti.App.Android.R.anim.slide_none,
-                    activityEnterAnimation : Ti.App.Android.R.anim.slide_out_right
-                });
-            } else {
-                new_win.close({animated:true});
-            }
-        }
-    });
-    */
+    
     if(os==='android'){
         new_win.open({
-            animated:true, 
-            theme: "AmazingTheme",
+            theme: "FullscreenTheme",
             activityEnterAnimation: Ti.App.Android.R.anim.slide_in,
             activityExitAnimation: Ti.App.Android.R.anim.still
         });
     } else {
         new_win.containingNav = win.containingNav;
-        win.containingNav.openWindow(new_win);//,{animated:true}
+        win.containingNav.openWindow(new_win);
     }
 
 
@@ -135,38 +116,20 @@ function openCustomBrowser(currentWin, url, share_tune_data, evals, video_data, 
         });
     }
 
+
     var barcol = '#222';
-
-    // If logged into amazingtunes account, set the cookies for the mobile site
-
-    if(Ti.App.Properties.getString("amazing_access_token")!=undefined && Ti.App.Properties.getString("amazing_access_token")!=null){
-
+    /*
+    // If any cookies are needed on the webview...
         var cookie_at = Ti.Network.createCookie({
-            name:"amazing_access_token",
-            value:Ti.App.Properties.getString("amazing_access_token"),
-            domain: ".amazingtunes.com",
+            name:"some_cookie",
+            value:"the calue",
+            domain: ".example.com",
             path: "/"
         });
         Ti.Network.addHTTPCookie(cookie_at);
 
-        var cookie_aud = Ti.Network.createCookie({
-            name:"amazing_user_data",
-            value:JSON.stringify(Ti.App.Properties.getObject("amazing_user_data")),
-            domain: ".amazingtunes.com",
-            path: "/"
-        });
-        Ti.Network.addHTTPCookie(cookie_aud);
-
-        var cookie_wt = Ti.Network.createCookie({
-            name:"welcome_text_dismissed",
-            value:"true",
-            domain: ".amazingtunes.com",
-            path: "/"
-        });
-        Ti.Network.addHTTPCookie(cookie_wt);
-
-    }
     //  "yyyy-_MM_-ddTHH:mm:ss.SSS+0000" 
+    */
 
     var webwindow = Ti.UI.createWebView({
         hideLoadIndicator:true,
@@ -220,10 +183,7 @@ function openCustomBrowser(currentWin, url, share_tune_data, evals, video_data, 
     forward_button.addEventListener('click', function(){
         webwindow.goForward();
     });
-    // 0xe8e5
-    //var share_button = Ti.UI.createButton({
-    //    systemButton:Ti.UI.iPhone.SystemButton.ACTION
-    //}); 
+
 
     if(hide_share_button===false){
         var share_button = createIconButton('\uf1e0',24,'#aaa','#873e3e');
@@ -318,16 +278,10 @@ function openCustomBrowser(currentWin, url, share_tune_data, evals, video_data, 
         //console.log(e.source.html);
     });
     if(currentWin!=undefined){
-        Piwik_tracker.trackEvent({
-            category:"browser",
-            name: url,
-            action:"open"
-        }); 
         if(os=='android'){
             w.open({
-                //theme: "Theme.AppCompat.Fullscreen",
                 animated:true, 
-                theme: "AmazingTheme",
+                theme: "FullscreenTheme",
                 activityEnterAnimation : Ti.App.Android.R.anim.slide_in_right_to_left,
                 activityExitAnimation : Ti.App.Android.R.anim.slide_none
             });
@@ -337,57 +291,6 @@ function openCustomBrowser(currentWin, url, share_tune_data, evals, video_data, 
         }    
     }
 }
-
-function openWindow(win, url, config_data){    
-    config_data = config_data || null;
-    if (Titanium.Network.online === false) {
-        alert('No network connection detected.\n\nAre you connected to wifi or a mobile network?');
-        return;
-    }
-    if(url == req_win){
-        //console.log('the last requested window is still being opened. Slow down!');
-        return;
-    }    
-    req_win = url;
-    var new_win = Ti.UI.createWindow({
-        top:0,
-        left:0,
-        right:0,
-        bottom:0,
-        fullscreen:true,
-        navBarHidden:true,
-        tabBarHidden:true,
-        navTintColor:'#333',
-        tintColor:'#333',
-        backgroundColor:'#111',
-        url:url
-    });
-    if(!isTablet()){
-        win.orientationModes = [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT];
-    }
-    new_win.addEventListener('open', function(e){
-        req_win = null;
-    });
-    // add provided config_data to window
-    if(config_data!=null){
-        for(key in config_data){
-            new_win[key] = config_data[key];
-        }
-    }
-    if(os=='android'){
-        new_win.open({
-            animated:true, 
-            theme: "AmazingTheme",
-            activityEnterAnimation : Ti.App.Android.R.anim.slide_in_right_to_left,
-            activityExitAnimation : Ti.App.Android.R.anim.slide_none
-        });
-    } else {
-        new_win.containingNav = win.containingNav;
-        win.containingNav.openWindow(new_win);//,{animated:true}
-    }
-}
-
-
 
 function getDeviceWidth(){
     if(Ti.Platform.osname=='android'){
