@@ -5,7 +5,7 @@
     <version>1.0</version>
     <publisher>kosso</publisher>
     <url>http://kosso.co.uk</url>
-    <description>undefined</description>
+    <description>boilerplate app template</description>
     <copyright>2017 by kosso</copyright>
     <icon>appicon.png</icon>
     <fullscreen>false</fullscreen>
@@ -50,10 +50,7 @@
         </splash>
         <theme>default</theme>
     </mobileweb>
-    <modules>
-        <module platform="iphone" version="0.3">ti.mely</module>
-        <module platform="android">ti.mely</module>
-    </modules>
+    <modules/>
     <deployment-targets>
         <target device="android">true</target>
         <target device="ipad">true</target>

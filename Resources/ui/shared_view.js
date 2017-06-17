@@ -8,7 +8,7 @@ var data = {
 };
 
 var is_running = false;
-var timerMod = null, timer = null;
+var timer_interval = null;
 
 function setData (obj){
     data = obj;
@@ -24,47 +24,37 @@ function isRunning(){
 
 function start(){
 
-	if(timerMod === null){
-
-		timerMod = require('ti.mely');
-		timer = timerMod.createTimer();
-		timer.start({
-			interval:1000
-		});
-		timer.addEventListener('onIntervalChange',update);
-	
+	if(timer_interval === null){		
+		timer_interval = setInterval(update, 1000);
 		is_running = true;
-	
 		console.log('started');
 	}
 }
 
 function stop(){
-	if(timer === null){
+	if(timer_interval === null){
 		return;
 	}
-	timer.stop();
-	timer.removeEventListener('onIntervalChange',update);
-	timer = null;
-	timerMod = null;
+	clearInterval(timer_interval);
+	timer_interval = null;
 	is_running = false;
-
 	console.log('stopped');
 
 }
 
 function update(){
-
+		// Let's just increment this to demonstrate the update. 
 		data.time++;
 		setData(data);
 		console.log('updated:', data.time);
-		Ti.App.fireEvent('player.update', data);
+		// Update it, where it may be,
+		Ti.App.fireEvent('timer.update', data);
 }
 
 
 function createSharedView(args){
 
-	var player_view = Ti.UI.createView(args);
+	var shared_view = Ti.UI.createView(args);
 	var label= Ti.UI.createLabel({
 		text:'shared view with timer',
 		top:6,
@@ -76,9 +66,9 @@ function createSharedView(args){
 		font:{fontSize:12}
 	});
 
-	player_view.add(label);
+	shared_view.add(label);
 
-	// Exmaple timer label to show the view is being updated independently from the context it's shown in. 
+	// Example timer label to show the view is being updated independently from the context it's shown in. 
 	var label_time = Ti.UI.createLabel({
 		text:getData().time,
 		top:30,
@@ -90,12 +80,12 @@ function createSharedView(args){
 		font:{fontSize:30, fontWeight:'bold'}
 	});
 
-	player_view.add(label_time);
+	shared_view.add(label_time);
 	// Allow it to be referenced elsewhere
-	player_view.label_time = label_time;
+	shared_view.label_time = label_time;
 
 	// Receive update for the label
-	Ti.App.addEventListener('player.update', function(d){
+	Ti.App.addEventListener('timer.update', function(d){
 		label_time.text = d.time;
 	});
 
@@ -109,7 +99,7 @@ function createSharedView(args){
 	btn_stop.addEventListener('click', function() {
 		stop();
 	});
-	player_view.add(btn_stop);
+	shared_view.add(btn_stop);
 
 	var btn_start = Ti.UI.createButton({
 		width:80,
@@ -119,9 +109,9 @@ function createSharedView(args){
 	btn_start.addEventListener('click', function() {
 		start();
 	});
-	player_view.add(btn_start);
+	shared_view.add(btn_start);
 
-	return player_view;
+	return shared_view;
 
 }
 
